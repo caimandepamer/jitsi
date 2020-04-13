@@ -1,0 +1,76 @@
+version: '3'
+
+services:
+#####################################################################
+    # Jitsi NGINX y MEET
+    jitsi-nginx-meet:
+            image: caimandepamer/jitsi:jitsiubuntubase01 
+            container_name: jnginx.mad-ti.com
+            ports:
+                - '80:80'
+                - '443:443'
+            networks:
+               local.jitsi02:
+                aliases:
+                    - jnginx.mad-ti.com
+                    - jmeet.mad-ti.com
+#####################################################################
+    # Jitsi prosody
+    jitsi-prosody:
+            # Ejecutar: /etc/iniciatodo.sh
+            image: caimandepamer/jitsi:jitsiubuntubase01_jprosodi_alpha01
+            container_name: jprosodi.mad-ti.com
+            # internos  
+            expose:
+                - '5222'
+                - '5347'
+                - '5280'
+            networks:
+               local.jitsi02:
+                aliases:
+                    - jprosodi.mad-ti.com
+                    - xmpp.mad-ti.com
+#####################################################################
+    # Jitsi Videobridge
+    jitsi-videobridge:
+            image: caimandepamer/jitsi:jitsiubuntubase01 
+            container_name: jvideobridge.mad-ti.com
+            # expuestos 
+            ports:
+                - '4443:4443'
+                - '10000:10000/udp'
+                - '10000:10000/tcp'
+                - '20000:20000/udp'
+                - '20000:20000/tcp'
+            networks:
+               local.jitsi02:
+                aliases:
+                    - jvideobridge.mad-ti.com
+                    - jvb.mad-ti.com
+#####################################################################
+    # Jitsi Conference Focus
+    jitsi-JICOFO:
+            image: caimandepamer/jitsi:jitsiubuntubase01 
+            container_name: jicofo.mad-ti.com
+            networks:
+               local.jitsi02:
+                aliases:
+                    - jicofo.mad-ti.com
+                    - focus.mad-ti.com
+#####################################################################
+    # Jitsi BRoadcasting Infrastructure
+    jitsi-jibri01:
+            image: caimandepamer/jitsi:jitsiubuntubase01 
+            container_name: jibri01.mad-ti.com
+            volumes:
+              - /dev/shm:/dev/shm
+            devices:
+              - /dev/snd:/dev/snd
+            networks:
+               local.jitsi02:
+                aliases:
+                    - jibri01.mad-ti.com
+#####################################################################
+networks:
+    local.jitsi02:
+
